@@ -9,8 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="100dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/textView"
+        android:id="@+id/Txt"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:gravity="bottom|right"
@@ -19,7 +18,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/textView"
+        android:layout_below="@+id/Txt"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true">
 
@@ -152,11 +151,11 @@
             android:id="@+id/button12"
             android:textSize="40sp"
             android:textStyle="bold"
-            android:onClick="numClick"
-            android:layout_alignParentBottom="true"
+            android:onClick="ResClick"
             android:layout_toRightOf="@+id/button14"
             android:layout_toEndOf="@+id/button14"
-            android:layout_below="@+id/button9" />
+            android:layout_alignBottom="@+id/button14"
+            android:layout_below="@+id/button10" />
 
         <Button
             android:layout_width="114sp"
@@ -182,6 +181,18 @@
             android:layout_toEndOf="@+id/button10"
             android:layout_alignLeft="@+id/button8"
             android:layout_alignStart="@+id/button8" />
+
+        <Button
+            android:layout_width="114sp"
+            android:layout_height="75dp"
+            android:text="c"
+            android:id="@+id/button11"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:onClick="ClearClick"
+            android:layout_below="@+id/button8"
+            android:layout_toRightOf="@+id/button10"
+            android:layout_toEndOf="@+id/button10" />
 
     </RelativeLayout>
 </RelativeLayout>
