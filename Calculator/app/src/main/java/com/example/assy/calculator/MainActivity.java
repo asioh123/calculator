@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     public void numClick(View sender)//function to add numbers and signs
     {
         Button bt = (Button)sender;
+
         VI.append(bt.getText());
     }
 
@@ -65,17 +66,97 @@ public class MainActivity extends AppCompatActivity {
         {
             temp=ary[i];//temp get the next char
 
-            if(temp.charAt(0)=='+')
+
+
+            if(temp.charAt(0)=='-' && i==1)//if its minus number first
+            {
+
+                i++;
+                if(i==ary.length)//if only sign
+                {
+                    VI.setText("");
+                    return;
+                }
+                temp=ary[i];
+
+                if(temp.charAt(0)=='-' || temp.charAt(0)=='+')//chack if the insert is ok
+                {
+                    VI.setText("");
+                    return;
+                }
+
+                while(temp.charAt(0)!='+' && temp.charAt(0)!='-')//chack when the next sign come up
+                {
+                    number += temp;
+                    i++;
+
+                    if(i==ary.length)
+                        break;
+
+                    temp=ary[i];
+                }
+
+                res-=Integer.parseInt(number);
+                number="";
+
+
+            }
+            if(temp.charAt(0)=='+' && i==1)//if its plus number first
+            {
+
+                i++;
+                if(i==ary.length)//if only sign
+                {
+                    VI.setText("");
+                    return;
+                }
+                temp=ary[i];
+
+                if(temp.charAt(0)=='-' || temp.charAt(0)=='+')//chack if the insert is ok
+                {
+                    VI.setText("");
+                    return;
+                }
+
+                while(temp.charAt(0)!='+' && temp.charAt(0)!='-')//chack when the next sign come up
+                {
+                    number += temp;
+                    i++;
+
+                    if(i==ary.length)
+                        break;
+
+                    temp=ary[i];
+                }
+
+                res+=Integer.parseInt(number);
+                number="";
+
+
+            }
+            else if(temp.charAt(0)=='+')
             {
                 if(res==0)
                 {
                     res += Integer.parseInt(number);
                     number="";
                 }
+                
                 i++;
+                if(i==ary.length)//chack if the sign is last
+                {
+                    VI.setText("");
+                    return;
+                }
                 temp=ary[i];
 
-                while(temp.charAt(0)!='+' && temp.charAt(0)!='-')
+                if(temp.charAt(0)=='-' || temp.charAt(0)=='+')//chack if the insert is ok
+                {
+                    VI.setText("");
+                    return;
+                }
+
+                while(temp.charAt(0)!='+' && temp.charAt(0)!='-')//chack when the next sign come up
                 {
                     number += temp;
                     i++;
@@ -92,15 +173,28 @@ public class MainActivity extends AppCompatActivity {
             }
             else if(temp.charAt(0)=='-')
             {
+
                 if(res==0)
                 {
                     res += Integer.parseInt(number);
                     number="";
                 }
+
                 i++;
+                if(i==ary.length)//chack if the sign is last
+                {
+                    VI.setText("");
+                    return;
+                }
                 temp=ary[i];
 
-                while(temp.charAt(0)!='+' && temp.charAt(0)!='-')
+                if(temp.charAt(0)=='-' || temp.charAt(0)=='+')//chack if the insert is ok
+                {
+                    VI.setText("");
+                    return;
+                }
+
+                while(temp.charAt(0)!='+' && temp.charAt(0)!='-')//chack when the next sign come up
                 {
                     number += temp;
                     i++;
@@ -121,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        number=String.valueOf(res);
+        number=String.valueOf(res);//convert int to string
 
         VI.setText(number);
 
