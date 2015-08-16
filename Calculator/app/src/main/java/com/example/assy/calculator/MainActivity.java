@@ -2,6 +2,7 @@ package com.example.assy.calculator;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +45,15 @@ public class MainActivity extends AppCompatActivity {
     {
         Button bt = (Button)sender;
 
+        char SignPress = bt.getText().toString().charAt(0);
+
+
+
+        if(SignPress=='3')//chack if the button the user press is 3
+        {
+            Log.i("number 3 click","number 3 click");
+        }
+
         VI.append(bt.getText());
     }
 
@@ -65,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         while(i<ary.length)
         {
             temp=ary[i];//temp get the next char
-
 
 
             if(temp.charAt(0)=='-' && i==1)//if its minus number first
@@ -215,7 +224,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        if(res==20)//chack if the result of the numbers are 20
+        {
+            Log.i("sum numbers 20","sum numbers 20");
+        }
+
         number=String.valueOf(res);//convert int to string
+
+
 
         VI.setText(number);
 
