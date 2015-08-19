@@ -9,13 +9,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Stack;
+
 public class MainActivity extends AppCompatActivity {
     TextView VI;
+    char SignBefore;
+    int Press=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        VI=(TextView)findViewById(R.id.Txt);
+        VI = (TextView) findViewById(R.id.Txt);
     }
 
     @Override
@@ -43,201 +48,266 @@ public class MainActivity extends AppCompatActivity {
 
     public void numClick(View sender)//function to add numbers and signs
     {
-        Button bt = (Button)sender;
+        Button bt = (Button) sender;
 
         char SignPress = bt.getText().toString().charAt(0);
 
+            if(Press==0)
+            {
+                if(SignPress!='+' && SignPress!='*' && SignPress!='/' && SignPress!='.')
+                {
+                    VI.append(bt.getText());
+                    SignBefore=SignPress;
+                    Press=1;
+                }
+            }
+            else if(SignPress=='+' || SignPress=='-' || SignPress=='*' || SignPress=='/' || SignPress=='.')
+            {
+                if(SignBefore=='+' || SignBefore=='-' || SignBefore=='*' || SignBefore=='/' || SignBefore=='.')
+                {
+                    return;
+                }
+                else
+                {
+                    VI.append(bt.getText());
+                    SignBefore=SignPress;
+                }
+
+            }
+            else
+            {
+                VI.append(bt.getText());
+                SignBefore=SignPress;
+            }
 
 
-        if(SignPress=='3')//chack if the button the user press is 3
+
+
+        if (SignPress == '3')//chack if the button the user press is 3
         {
-            Log.i("number 3 click","number 3 click");
+            Log.i("number 3 click", "number 3 click");
         }
-
-        VI.append(bt.getText());
     }
 
     public void ClearClick(View sender)//function to clear the label
     {
         VI.setText("");
+        Press=0;
     }
 
 
     public void ResClick(View sender)//function to take the numbers and calculate
     {
-       String result = VI.getText().toString(); //take the text from the label convert to string
+        String result = VI.getText().toString(); //take the text from the label convert to string
         String[] ary = result.split(""); // take the string and convert to arrayString
+        String FinalRes;// String get the final result from functions
 
-        int res=0,i=1;
-        String temp="",number="";
-
-
-        while(i<ary.length)
+        if(result.length()==0)//if the user dont add any number
         {
-            temp=ary[i];//temp get the next char
+            return;
+        }
+        else if(SignBefore=='+' || SignBefore=='-' || SignBefore=='*' || SignBefore=='/' || SignBefore=='.')//if the user press = when its finish with sign
+        {
+            return;
+        }
+
+        ary=shuntingYard(ary);//call to shantingYard function
+
+        FinalRes=doMath(ary);//call to doMath function after use the shuntingYard
+
+        VI.setText(FinalRes);//Text view get the result
+
+    }
 
 
-            if(temp.charAt(0)=='-' && i==1)//if its minus number first
+    //function shuntingYard algorithm
+    //the function get stringArray of values like 2+5-6 and return StringArray  2 5 + 6 -
+
+    public String[] shuntingYard(String [] ary)
+    {
+        String Temp="",TempSign="",Number="";
+
+        Stack <String> Res = new Stack<>();
+        Stack <String> Sign = new Stack<>();
+
+        String SignList1 = "+*";
+        String SignList2 = "-/";
+
+        int Counter=1,SignNumber=-1,SignNumberStack=-1;
+
+        while(Counter!=ary.length)
+        {
+            Temp=ary[Counter];    //the next char come up
+            Number="";            //reset value
+            SignNumber=-1;        //reset value
+            SignNumberStack=-1;   //reset value
+
+            if(Temp.charAt(0)=='-' && Counter==1)//if the first char of the stringArray is '-' sign. if its true push it to the stack Res and proceed
             {
-
-                i++;
-                if(i==ary.length)//if only sign
-                {
-                    VI.setText("");
-                    return;
-                }
-                temp=ary[i];
-
-                if(temp.charAt(0)=='-' || temp.charAt(0)=='+')//chack if the insert is ok
-                {
-                    VI.setText("");
-                    return;
-                }
-
-                while(temp.charAt(0)!='+' && temp.charAt(0)!='-')//chack when the next sign come up
-                {
-                    number += temp;
-                    i++;
-
-                    if(i==ary.length)
-                        break;
-
-                    temp=ary[i];
-                }
-
-                res-=Integer.parseInt(number);
-                number="";
-
-
+                Res.push(Temp);
+                Counter++;
             }
-            if(temp.charAt(0)=='+' && i==1)//if its plus number first
+            else  if(Temp.charAt(0)>='0' && Temp.charAt(0)<='9' || Temp.charAt(0)=='.' )//if the char is a number from 0-10 or . go to the wile and take all the numbers until you get sign
             {
-
-                i++;
-                if(i==ary.length)//if only sign
+                while (Temp.charAt(0)>='0' && Temp.charAt(0)<='9' || Temp.charAt(0)=='.')
                 {
-                    VI.setText("");
-                    return;
-                }
-                temp=ary[i];
-
-                if(temp.charAt(0)=='-' || temp.charAt(0)=='+')//chack if the insert is ok
-                {
-                    VI.setText("");
-                    return;
-                }
-
-                while(temp.charAt(0)!='+' && temp.charAt(0)!='-')//chack when the next sign come up
-                {
-                    number += temp;
-                    i++;
-
-                    if(i==ary.length)
+                    Number+=Temp;
+                    Counter++;
+                    if(Counter==ary.length)
+                    {
                         break;
-
-                    temp=ary[i];
+                    }
+                    Temp=ary[Counter];
                 }
 
-                res+=Integer.parseInt(number);
-                number="";
-
-
-            }
-            else if(temp.charAt(0)=='+')
-            {
-                if(res==0)
-                {
-                    res += Integer.parseInt(number);
-                    number="";
-                }
-                
-                i++;
-                if(i==ary.length)//chack if the sign is last
-                {
-                    VI.setText("");
-                    return;
-                }
-                temp=ary[i];
-
-                if(temp.charAt(0)=='-' || temp.charAt(0)=='+')//chack if the insert is ok
-                {
-                    VI.setText("");
-                    return;
-                }
-
-                while(temp.charAt(0)!='+' && temp.charAt(0)!='-')//chack when the next sign come up
-                {
-                    number += temp;
-                    i++;
-
-                    if(i==ary.length)
-                        break;
-
-                    temp=ary[i];
-                }
-
-                res+=Integer.parseInt(number);
-                number="";
-
-            }
-            else if(temp.charAt(0)=='-')
-            {
-
-                if(res==0)
-                {
-                    res += Integer.parseInt(number);
-                    number="";
-                }
-
-                i++;
-                if(i==ary.length)//chack if the sign is last
-                {
-                    VI.setText("");
-                    return;
-                }
-                temp=ary[i];
-
-                if(temp.charAt(0)=='-' || temp.charAt(0)=='+')//chack if the insert is ok
-                {
-                    VI.setText("");
-                    return;
-                }
-
-                while(temp.charAt(0)!='+' && temp.charAt(0)!='-')//chack when the next sign come up
-                {
-                    number += temp;
-                    i++;
-
-                    if(i==ary.length)
-                        break;
-
-                    temp=ary[i];
-                }
-
-                res-=Integer.parseInt(number);
-                number="";
+                Res.push(Number);
             }
             else
             {
-                number += temp;
-                i++;
+
+                SignNumber= SignList1.indexOf(Temp.charAt(0));
+
+                if(SignNumber==-1)
+                {
+                    SignNumber= SignList2.indexOf(Temp.charAt(0));
+                }
+
+
+                if(Sign.size()==0)
+                {
+                    Sign.push(Temp);
+                    Counter++;
+                    continue;
+                }
+                else
+                {
+                    TempSign=Sign.peek();
+                    SignNumberStack=SignList1.indexOf(TempSign.charAt(0));
+
+                    if(SignNumberStack==-1)
+                    {
+                        SignNumberStack= SignList2.indexOf(TempSign.charAt(0));
+                    }
+                }
+
+                if(SignNumber>SignNumberStack)
+                {
+                    Sign.push(Temp);
+                }
+                else if(SignNumber<=SignNumberStack)
+                {
+                    while(SignNumber<=SignNumberStack)
+                    {
+                        Res.push(Sign.pop());
+
+                        if(Sign.size()!=0)
+                        {
+                            TempSign=Sign.peek();
+                            SignNumberStack=SignList1.indexOf(TempSign.charAt(0));
+
+                            if(SignNumberStack==-1)
+                            {
+                                SignNumberStack= SignList2.indexOf(Temp.charAt(0));
+                            }
+
+                        }
+                        else{
+                            break;
+                        }
+
+                    }
+                    Sign.push(Temp);
+                }
+                    Counter++;
+            }
+
+        }
+
+        while(Sign.size()!=0)
+        {
+            Res.push(Sign.pop());
+        }
+
+        String[] stockArr = new String[Res.size()];// convert Res stack string to ArrayString
+        stockArr = Res.toArray(stockArr);
+
+
+
+        return stockArr;
+    }
+
+
+    //function doMath
+    //the function get stringArray of shuntingYard algorithm and convert the StringArray to double result
+
+    public String doMath(String arr[])
+    {
+        double num1,num2,res;
+        Stack <String> StackMath = new Stack<>();
+        int counter=0;
+
+        String FinalResult="",temp="-";
+
+        while (counter!=arr.length)
+        {
+            if (arr[counter].charAt(0) == '+') {
+
+                num2 = Double.parseDouble(StackMath.pop());
+                num1 = Double.parseDouble(StackMath.pop());
+                res = num1 + num2;
+                StackMath.push(String.valueOf(res));
+
+                counter++;
+            }
+            else if(arr[counter].charAt(0) == '-' && counter==0)
+            {
+                counter++;
+                temp+=arr[counter];
+                StackMath.push(temp);
+                counter++;
+            }
+            else if (arr[counter].charAt(0) == '-') {
+
+                num2 = Double.parseDouble(StackMath.pop());
+                num1 = Double.parseDouble(StackMath.pop());
+                res = num1 - num2;
+                StackMath.push(String.valueOf(res));
+
+                counter++;
+            }
+            else if (arr[counter].charAt(0) == '*') {
+
+                num2 = Double.parseDouble(StackMath.pop());
+                num1 = Double.parseDouble(StackMath.pop());
+                res = num1 * num2;
+                StackMath.push(String.valueOf(res));
+
+                counter++;
+            }
+            else if (arr[counter].charAt(0) == '/') {
+
+                num2 = Double.parseDouble(StackMath.pop());
+                num1 = Double.parseDouble(StackMath.pop());
+                res = num1 / num2;
+                StackMath.push(String.valueOf(res));
+
+                counter++;
+            }
+            else {
+                StackMath.push(arr[counter]);
+                counter++;
             }
         }
 
-        if(res==20)//chack if the result of the numbers are 20
-        {
-            Log.i("sum numbers 20","sum numbers 20");
-        }
-
-        number=String.valueOf(res);//convert int to string
-
-
-
-        VI.setText(number);
-
-        }
-
+        FinalResult= StackMath.pop();
+        return  FinalResult;
     }
+
+
+
+
+
+}
 
 
 
